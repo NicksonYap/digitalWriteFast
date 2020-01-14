@@ -1,6 +1,6 @@
 # Notes
 
-Notes down the observations, experiences and occorances during the development of the repo.
+Notes down the observations, experiences and occurances during the development of the repo.
 
 Useful for explaining certain decisions.
 
