@@ -26,7 +26,7 @@ Setting the parameter as a variable would cause the macro to return an error dur
 
 This makes sure `digitalWriteFast` that produces faster toggling, and notifies the programmer the specific area where toggling is slow. Otherwise, use normal `digitalWrite`
 
-This is opposed to the forked library form Watterott, where if a variable is used as the parameter, the macro would revert to use sold `digitalWrite`, and remain undetected.
+This is opposed to the forked library form Watterott, where if a variable is used as the parameter, the macro would revert to use old `digitalWrite`, and remain undetected.
 
 
 ## Speed
