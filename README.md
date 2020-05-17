@@ -13,10 +13,10 @@ Macro definitions:
 
 Parameters:
 * `pinNum` is the number written on the Arduino board.
-* `state` is weather pin is to be set `HIGH` or `LOW`
-* `mode` is weather pin is to be set `INPUT` or `OUTPUT`
+* `state` is whether pin is to be set `HIGH` or `LOW`
+* `mode` is whether pin is to be set `INPUT` or `OUTPUT`
 
-In order to toggle fast, all the three parameters above must be constant or defined by the macro for ease in changes during compilation.
+In order to toggle quickly, all the three parameters above must be constant or defined by the macro for ease in changes during compilation.
 
 For example: 
 * use '#define pinNum 10' instead of `int pinNum = 10;`
@@ -24,7 +24,7 @@ For example:
 
 Setting the parameter as a variable would cause the macro to return an error during compilation.
 
-This makes sure `digitalWriteFast` that produces faster toggling, and notifies the programmer the specific area where toggling is slow. Otherwise, use normal `digitalWrite`
+This makes sure `digitalWriteFast` produces faster toggling, and notifies the programmer the specific area where toggling is slow. Otherwise, use normal `digitalWrite`
 
 This is opposed to the forked library form Watterott, where if a variable is used as the parameter, the macro would revert to use sold `digitalWrite`, and remain undetected.
 
