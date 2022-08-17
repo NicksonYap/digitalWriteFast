@@ -260,6 +260,27 @@
 (((P) >= 8 && (P) <= 11) ? (P) - 4 : (((P) >= 18 && (P) <= 21) ? 25 - (P) : (((P) == 0) ? 2 : (((P) == 1) ? 3 : (((P) == 2) ? 1 : (((P) == 3) ? 0 : (((P) == 4) ? 4 : (((P) == 6) ? 7 : (((P) == 13) ? 7 : (((P) == 14) ? 3 : (((P) == 15) ? 1 : (((P) == 16) ? 2 : (((P) == 17) ? 0 : (((P) == 22) ? 1 : (((P) == 23) ? 0 : (((P) == 24) ? 4 : (((P) == 25) ? 7 : (((P) == 26) ? 4 : (((P) == 27) ? 5 : 6 )))))))))))))))))))
 
 
+// --- Digispark ATTiny85 (check < generic __AVR__ test later)
+#elif defined(ARDUINO_AVR_DIGISPARK) && defined(__AVR_ATtiny85__) //Digispark ATTiny85
+
+#define UART_RX_PIN     -1 //no UART, for USI use DI/SDA (PB0)
+#define UART_TX_PIN     -1 //no UART, for USI use DO (PB1)
+
+#define I2C_SDA_PIN     (0) //PB0
+#define I2C_SCL_PIN     (2) //PB2
+
+#define SPI_HW_SS_PIN   -1 //no SS
+#define SPI_HW_MOSI_PIN (0) //PB0
+#define SPI_HW_MISO_PIN (1) //PB1
+#define SPI_HW_SCK_PIN  (2) //PB2
+
+//ATTiny85 only has PORTB:
+#define __digitalPinToPortReg(P)  &PORTB
+#define __digitalPinToDDRReg(P)  &DDRB
+#define __digitalPinToPINReg(P)  &PINB
+#define __digitalPinToBit(P)  P
+
+
 // --- Arduino Uno ---
 #elif (defined(ARDUINO_AVR_UNO) || \
        defined(ARDUINO_AVR_DUEMILANOVE) || \
@@ -304,7 +325,9 @@
 
 //ref: http://forum.arduino.cc/index.php?topic=140409.msg1054868#msg1054868
 //void OutputsErrorIfCalled( void ) __attribute__ (( error( "Line: "__line__ "Variable used for digitalWriteFast") ));
-void NonConstantUsed( void )  __attribute__ (( error("") )); 
+//void NonConstantUsed( void )  __attribute__ (( error("") )); 
+//allow in-lined usage (requires non-void ret type):
+int NonConstantUsed( void )  __attribute__ (( error("") )); 
 
 
 #ifndef digitalWriteFast
@@ -315,6 +338,11 @@ if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
 } else { \
   NonConstantUsed(); \
 }
+//allow in-lined expr:
+#define digitalWriteFast_expr(P, V) \
+((__builtin_constant_p(P) && __builtin_constant_p(V))? \
+  BIT_WRITE(*__digitalPinToPortReg(P), __digitalPinToBit(P), (V)): \
+  NonConstantUsed())
 #else
 //#define digitalWriteFast digitalWrite
 #error Non-AVR device, unsupported.
@@ -330,6 +358,11 @@ if (__builtin_constant_p(P) && __builtin_constant_p(V)) { \
 } else { \
   NonConstantUsed(); \
 }
+//allow in-lined expr:
+#define pinModeFast_expr(P, V) \
+((__builtin_constant_p(P) && __builtin_constant_p(V))? \
+  BIT_WRITE(*__digitalPinToDDRReg(P), __digitalPinToBit(P), (V)): \
+  NonConstantUsed())
 #else
 //#define pinModeFast pinMode
 #error Non-AVR device, unsupported.
